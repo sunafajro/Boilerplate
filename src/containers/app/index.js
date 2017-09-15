@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Navigation from './Navigation';
-import Home from './Home';
-import About from './About';
-import Login from './Login';
+import Navigation from '../navigation/index';
+import Home from '../home/index';
+import About from '../about/index';
+import Login from '../login/index';
 
 class App extends React.Component {
   render() {
