@@ -21,6 +21,8 @@ module.exports = {
     },
     devServer: {
       contentBase: './dist',
-      hot: true
+      hot: true,
+      /* направляет все запросы в / */
+      historyApiFallback: true,       
     }
   };
