@@ -10,12 +10,32 @@ export const getHome = () => {
     return setTimeout(() => {
       dispatch({
         type: GET_HOME,
+        jumbotron: [ NEWS.jumbotron ],
         news: [
-          {id: 1, title: 'Первая новость', body: 'Текст новости'},
-          {id: 2, title: 'Вторая новость', body: 'Текст новости'},
-          {id: 3, title: 'Третья новость', body: 'Текст новости'}
+          NEWS.first,
+          NEWS.second,
+          NEWS.third,
+          NEWS.fourth
         ]
       })
-    }, 3000);
+    }, 2000);
+  }
+};
+
+const NEWS = {
+  jumbotron: {
+    id: 1, title: 'Jumbotron heading', body: 'Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.'
+  },
+  first: {
+    id: 1, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
+  },
+  second: {
+    id: 2, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
+  },
+  third: {
+    id: 3, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
+  },
+  fourth: {
+    id: 4, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
   }
 };

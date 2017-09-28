@@ -1,20 +1,34 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import NavLinks from './components/nav-links';
 
 class Navigation extends React.Component {
+  static propTypes = {
+    location: PropTypes.object.isRequired
+  }
+
   render() {
     return (
-      <header>
-        <nav>
-          <ul>
-            <li><Link to='/'>Home</Link></li>
-            <li><Link to='/about'>About</Link></li>
-            <li><Link to='/login'>Login</Link></li>
-          </ul>
-        </nav>
-      </header>
+      <nav className="navbar navbar-expand-lg navbar-light fixed-top bg-light">
+        <div className="container">
+          <Link className="navbar-brand" to="/">My application</Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <NavLinks location={ this.props.location } />
+        </div>
+      </nav>
     );
   }
 }
 
 export default Navigation;
+

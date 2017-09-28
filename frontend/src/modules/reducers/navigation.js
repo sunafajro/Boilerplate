@@ -1,25 +1,23 @@
-export const GET_HOME_REQUESTED = 'GET_HOME_REQUESTED';
-export const GET_HOME = 'GET_HOME';
+export const GET_NAVIGATION_REQUESTED = 'GET_NAVIGATION_REQUESTED';
+export const GET_NAVIGATION = 'GET_NAVIGATION';
 
 const initialState = {
-  jumbotron: [],
-  news: [],
+  links: [],
   fetching: false
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case GET_HOME_REQUESTED:
+    case GET_NAVIGATION_REQUESTED:
       return {
         ...state,
         fetching: true
       }
   
-    case GET_HOME:
+    case GET_NAVIGATION:
       return {
         ...state,
-        jumbotron: action.jumbotron,
-        news: action.news,
+        links: action.links,
         fetching: !state.fetching
       }
 
