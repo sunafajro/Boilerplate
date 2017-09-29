@@ -9,8 +9,12 @@ $config = [
     'bootstrap' => ['log'],
     'components' => [
         'request' => [
+            'enableCsrfValidation' => false,
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'f6xl6z-ZUjF7nMKZf-W4xViIw83HAZAm',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -43,6 +47,9 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'login' => 'site/index',
+                'api/login' => 'site/login',
+                'api/logout' => 'site/logout'
             ],
         ],
     ],
