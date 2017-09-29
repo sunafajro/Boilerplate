@@ -9,17 +9,50 @@ export const login = ({ username, password }) => {
       type: LOGIN_REQUESTED
     });
 
-    return setTimeout(() => {
-      let auth = authUser({ username, password })
+    const body = JSON.stringify({'LoginForm': { username, password }});
+
+    fetch('/api/login',
+    {
+      method: 'POST',
+      accept: 'application/json',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      let r = response.json();
+      throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+    })
+    .then(json => {
+      if (json.result) {
+        dispatch({
+          type: LOGIN,
+          username: json.username,
+          loggedIn: true,
+          message: { type: 'success', text: json.message }
+        });
+      } else {
+        dispatch({
+          type: LOGIN,
+          username: 'guest',
+          loggedIn: false,
+          message: { type: 'fail', text: json.message }
+        });
+      }
+    })
+    .catch(err => {
       dispatch({
         type: LOGIN,
-        username: auth ? username : 'guest',
-        loggedIn: auth,
-        message: auth ?
-          { type: 'success', text:'Вход успешен' } :
-          { type: 'fail', text:'Неправильный логин или пароль' }
-      })
-    }, 2000);
+        username: 'guest',
+        loggedIn: false,
+        message: { type: 'fail', text: err }
+      });
+    });
   }
 };
 
@@ -29,25 +62,46 @@ export const logout = () => {
       type: LOGOUT_REQUESTED
     });
 
-    return setTimeout(() => {
+    fetch('/api/logout',
+    {
+      method: 'POST',
+      accept: 'application/json',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      let r = response.json();
+      throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+    })
+    .then(json => {
+      if (json.result) {
+        dispatch({
+          type: LOGOUT,
+          username: 'guest',
+          loggedIn: false,
+          message: { type: 'success', text: json.message }
+        });
+      } else {
+        dispatch({
+          type: LOGOUT,
+          username: json.username,
+          loggedIn: true,
+          message: { type: 'fail', text: json.message }
+        });
+      }
+    })
+    .catch(err => {
       dispatch({
         type: LOGOUT,
-        loggedIn: false
-      })
-    }, 2000);
+        username: json.username,
+        loggedIn: true,
+        message: { type: 'fail', text: err }
+      });
+    });
   }
 };
-
-function authUser ({ username, password }) {
-
-  let auth = USERS.filter(item => {
-    return item.username === username && item.password === password;
-  });
-
-  return auth.length ? true : false;
-}
-
-const USERS = [
-  { id: 1, username: 'admin', password: 'admin' },
-  { id: 2, username: 'user', password: 'user' }
-];
