@@ -4,11 +4,11 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
-use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\web\Controller;
+use yii\web\Response;
 
 class SiteController extends Controller
 {
@@ -32,6 +32,7 @@ class SiteController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
+                    'login' => ['post'],
                     'logout' => ['post'],
                 ],
             ],
@@ -71,17 +72,33 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
+        $this->layout = false;
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (Yii::$app->request->post('LoginForm')) {
+            $data = Yii::$app->request->post('LoginForm');
+            $model = new LoginForm();
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            $model->username = $data['username'];
+            $model->password = $data['username'];
+
+            if ($model->login()) {
+                return [
+                    'result' => true,
+                    'username' => $model->username
+                ];
+            } else {
+                return [
+                    'result' => false,
+                    'message' => 'Неправильный логин или пароль!'
+                ];
+            }
+        } else {
+            Yii::$app->response->statusCode = 400;
+            return [
+                'result' => false,
+                'message' => Yii::t('yii', 'Missing required parameters: {LoginForm}!')
+            ];
         }
-        return $this->render('login', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -91,9 +108,20 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        $this->layout = false;
+        Yii::$app->response->format = Response::FORMAT_JSON;
 
-        return $this->goHome();
+        if (Yii::$app->user->logout()) {
+            return [
+                'result' => true,
+                'message' => 'Успешный выход.'
+            ];
+        } else {
+            return [
+                'result' => false,
+                'message' => 'Ошибка выхода.'
+            ];
+        }
     }
 
     /**
