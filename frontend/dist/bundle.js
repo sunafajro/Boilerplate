@@ -13622,15 +13622,46 @@ var login = exports.login = function login(_ref) {
       type: LOGIN_REQUESTED
     });
 
-    return setTimeout(function () {
-      var auth = authUser({ username: username, password: password });
+    var body = JSON.stringify({ 'LoginForm': { username: username, password: password } });
+
+    fetch('/api/login', {
+      method: 'POST',
+      accept: 'application/json',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: body
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      var r = response.json();
+      throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+    }).then(function (json) {
+      if (json.result) {
+        dispatch({
+          type: LOGIN,
+          username: json.username,
+          loggedIn: true,
+          message: { type: 'success', text: json.message }
+        });
+      } else {
+        dispatch({
+          type: LOGIN,
+          username: 'guest',
+          loggedIn: false,
+          message: { type: 'fail', text: json.message }
+        });
+      }
+    }).catch(function (err) {
       dispatch({
         type: LOGIN,
-        username: auth ? username : 'guest',
-        loggedIn: auth,
-        message: auth ? { type: 'success', text: 'Вход успешен' } : { type: 'fail', text: 'Неправильный логин или пароль' }
+        username: 'guest',
+        loggedIn: false,
+        message: { type: 'fail', text: err }
       });
-    }, 2000);
+    });
   };
 };
 
@@ -13640,28 +13671,45 @@ var logout = exports.logout = function logout() {
       type: LOGOUT_REQUESTED
     });
 
-    return setTimeout(function () {
+    fetch('/api/logout', {
+      method: 'POST',
+      accept: 'application/json',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      var r = response.json();
+      throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+    }).then(function (json) {
+      if (json.result) {
+        dispatch({
+          type: LOGOUT,
+          username: 'guest',
+          loggedIn: false,
+          message: { type: 'success', text: json.message }
+        });
+      } else {
+        dispatch({
+          type: LOGOUT,
+          username: json.username,
+          loggedIn: true,
+          message: { type: 'fail', text: json.message }
+        });
+      }
+    }).catch(function (err) {
       dispatch({
         type: LOGOUT,
-        loggedIn: false
+        username: json.username,
+        loggedIn: true,
+        message: { type: 'fail', text: err }
       });
-    }, 2000);
+    });
   };
 };
-
-function authUser(_ref2) {
-  var username = _ref2.username,
-      password = _ref2.password;
-
-
-  var auth = USERS.filter(function (item) {
-    return item.username === username && item.password === password;
-  });
-
-  return auth.length ? true : false;
-}
-
-var USERS = [{ id: 1, username: 'admin', password: 'admin' }, { id: 2, username: 'user', password: 'user' }];
 
 /***/ }),
 /* 128 */
