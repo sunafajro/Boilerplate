@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\User;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -34,6 +35,7 @@ class SiteController extends Controller
                 'actions' => [
                     'login' => ['post'],
                     'logout' => ['post'],
+                    'state' => ['post'],
                 ],
             ],
         ];
@@ -79,12 +81,13 @@ class SiteController extends Controller
             $model = new LoginForm();
 
             $model->username = $data['username'];
-            $model->password = $data['username'];
+            $model->password = $data['password'];
 
             if ($model->login()) {
                 return [
                     'result' => true,
-                    'username' => $model->username
+                    'userId' => Yii::$app->user->identity->id,
+                    'username' => Yii::$app->user->identity->username
                 ];
             } else {
                 return [
@@ -122,6 +125,17 @@ class SiteController extends Controller
                 'message' => 'Ошибка выхода.'
             ];
         }
+    }
+
+    public function actionState()
+    {
+        $this->layout = false;
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            'result' => true,
+            'loggedIn' => !Yii::$app->user->isGuest,
+            'profile' => User::getUserData()
+        ];
     }
 
     /**

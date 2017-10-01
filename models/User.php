@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use Yii;
+
 class User extends \yii\base\Object implements \yii\web\IdentityInterface
 {
     public $id;
@@ -100,5 +102,20 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === $password;
+    }
+
+    public static function getUserData()
+    {
+        if (Yii::$app->user->isGuest) {
+            return [
+                'id' => 0,
+                'username' => 'guest'
+            ];
+        } else {
+            return [
+                'id' => Yii::$app->user->identity->id,
+                'username' => Yii::$app->user->identity->username,
+            ];
+        } 
     }
 }
