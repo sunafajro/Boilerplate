@@ -13622,15 +13622,46 @@ var login = exports.login = function login(_ref) {
       type: LOGIN_REQUESTED
     });
 
-    return setTimeout(function () {
-      var auth = authUser({ username: username, password: password });
+    var body = JSON.stringify({ 'LoginForm': { username: username, password: password } });
+
+    fetch('/api/login', {
+      method: 'POST',
+      accept: 'application/json',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: body
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      var r = response.json();
+      throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+    }).then(function (json) {
+      if (json.result) {
+        dispatch({
+          type: LOGIN,
+          username: json.username,
+          loggedIn: true,
+          message: { type: 'success', text: json.message }
+        });
+      } else {
+        dispatch({
+          type: LOGIN,
+          username: 'guest',
+          loggedIn: false,
+          message: { type: 'fail', text: json.message }
+        });
+      }
+    }).catch(function (err) {
       dispatch({
         type: LOGIN,
-        username: auth ? username : 'guest',
-        loggedIn: auth,
-        message: auth ? { type: 'success', text: 'Вход успешен' } : { type: 'fail', text: 'Неправильный логин или пароль' }
+        username: 'guest',
+        loggedIn: false,
+        message: { type: 'fail', text: err }
       });
-    }, 2000);
+    });
   };
 };
 
@@ -13640,28 +13671,45 @@ var logout = exports.logout = function logout() {
       type: LOGOUT_REQUESTED
     });
 
-    return setTimeout(function () {
+    fetch('/api/logout', {
+      method: 'POST',
+      accept: 'application/json',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      var r = response.json();
+      throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+    }).then(function (json) {
+      if (json.result) {
+        dispatch({
+          type: LOGOUT,
+          username: 'guest',
+          loggedIn: false,
+          message: { type: 'success', text: json.message }
+        });
+      } else {
+        dispatch({
+          type: LOGOUT,
+          username: json.username,
+          loggedIn: true,
+          message: { type: 'fail', text: json.message }
+        });
+      }
+    }).catch(function (err) {
       dispatch({
         type: LOGOUT,
-        loggedIn: false
+        username: json.username,
+        loggedIn: true,
+        message: { type: 'fail', text: err }
       });
-    }, 2000);
+    });
   };
 };
-
-function authUser(_ref2) {
-  var username = _ref2.username,
-      password = _ref2.password;
-
-
-  var auth = USERS.filter(function (item) {
-    return item.username === username && item.password === password;
-  });
-
-  return auth.length ? true : false;
-}
-
-var USERS = [{ id: 1, username: 'admin', password: 'admin' }, { id: 2, username: 'user', password: 'user' }];
 
 /***/ }),
 /* 128 */
@@ -29775,6 +29823,9 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var GET_HOME_REQUESTED = exports.GET_HOME_REQUESTED = 'GET_HOME_REQUESTED';
 var GET_HOME = exports.GET_HOME = 'GET_HOME';
 
@@ -29784,33 +29835,64 @@ var getHome = exports.getHome = function getHome() {
       type: GET_HOME_REQUESTED
     });
 
-    return setTimeout(function () {
+    fetch('/api/get-ads', {
+      method: 'POST',
+      accept: 'application/json',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json();
+      } else {
+        if (isJson(response)) {
+          var _r = response.json();
+        }
+        throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+      }
+    }).then(function (json) {
+      if (json.result) {
+        var jumbotron = [];
+        var news = [];
+        if (json.ads.length) {
+          jumbotron = [json.ads[0]];
+          news = [].concat(_toConsumableArray(json.ads));
+          news.shift();
+        }
+        dispatch({
+          type: GET_HOME,
+          jumbotron: jumbotron,
+          news: news,
+          message: { type: 'success', text: json.message }
+        });
+      } else {
+        dispatch({
+          type: GET_HOME,
+          jumbotron: [],
+          news: [],
+          message: { type: 'fail', text: json.message ? json.message : 'Ошибка получения новостей!' }
+        });
+      }
+    }).catch(function (err) {
       dispatch({
         type: GET_HOME,
-        jumbotron: [NEWS.jumbotron],
-        news: [NEWS.first, NEWS.second, NEWS.third, NEWS.fourth]
+        jumbotron: [],
+        news: [],
+        message: { type: 'fail', text: err }
       });
-    }, 2000);
+    });
   };
 };
 
-var NEWS = {
-  jumbotron: {
-    id: 1, title: 'Jumbotron heading', body: 'Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.'
-  },
-  first: {
-    id: 1, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
-  },
-  second: {
-    id: 2, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
-  },
-  third: {
-    id: 3, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
-  },
-  fourth: {
-    id: 4, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
+function isJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
   }
-};
+  return true;
+}
 
 /***/ }),
 /* 288 */

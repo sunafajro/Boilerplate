@@ -7,35 +7,65 @@ export const getHome = () => {
       type: GET_HOME_REQUESTED
     });
 
-    return setTimeout(() => {
+    fetch('/api/get-ads',
+    {
+      method: 'POST',
+      accept: 'application/json',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        if(isJson(response)) {
+          let r = response.json();
+        }
+        throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+      }      
+    })
+    .then(json => {
+      if (json.result) {
+        let jumbotron = [];
+        let news = [];
+        if (json.ads.length) {
+          jumbotron = [ json.ads[0] ];
+          news = [ ...json.ads ];
+          news.shift();
+        }
+        dispatch({
+          type: GET_HOME,
+          jumbotron: jumbotron,
+          news: news,
+          message: { type: 'success', text: json.message}
+        });
+      } else {
+        dispatch({
+          type: GET_HOME,
+          jumbotron: [],
+          news: [],
+          message: { type: 'fail', text: json.message ? json.message : 'Ошибка получения новостей!' }
+        });
+      }
+    })
+    .catch(err => {
       dispatch({
         type: GET_HOME,
-        jumbotron: [ NEWS.jumbotron ],
-        news: [
-          NEWS.first,
-          NEWS.second,
-          NEWS.third,
-          NEWS.fourth
-        ]
-      })
-    }, 2000);
+        jumbotron: [],
+        news: [],
+        message: { type: 'fail', text: err }
+      });
+    });
   }
 };
 
-const NEWS = {
-  jumbotron: {
-    id: 1, title: 'Jumbotron heading', body: 'Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.'
-  },
-  first: {
-    id: 1, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
-  },
-  second: {
-    id: 2, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
-  },
-  third: {
-    id: 3, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
-  },
-  fourth: {
-    id: 4, title: 'News title', body: 'Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.'
+function isJson(str) {
+  try {
+      JSON.parse(str);
+  } catch (e) {
+      return false;
   }
-};
+  return true;
+}
