@@ -48,6 +48,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'login' => 'site/index',
+                'api/state' => 'site/state',
                 'api/login' => 'site/login',
                 'api/logout' => 'site/logout',
                 'api/get-ads' => 'message/get-ads',
