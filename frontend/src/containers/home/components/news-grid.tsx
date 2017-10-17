@@ -1,8 +1,12 @@
-import React from 'react';
+import * as React from 'react';
 
-export const NewsRow = ({ news }) => (
+export interface Props {
+  news: Array<{ id: number, title: string, body: string }>
+}
+
+export const NewsRow = (props: Props) => (
   <div className="row">
-    { news.map(item => {
+    { props.news.map(item => {
        return (
         <div key={ item.id } className="col-sm-3">
           <h2>{ item.title }</h2>

@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getState } from '../../modules/actions/auth';
@@ -10,24 +9,27 @@ import { About } from '../about/index';
 import Login from '../login/index';
 import { Footer } from '../footer/index';
 
-class App extends React.Component {
-  static propTypes = {
-    location: PropTypes.object.isRequired,
-    loggedIn: PropTypes.bool.isRequired,
-    userId: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
-    fetching: PropTypes.bool.isRequired,
-  }
+export interface Props {
+  location: Object;
+  loggedIn: boolean;
+  userId: number;
+  username: string;
+  fetching: boolean;
+  getState: Function
+}
+
+class App extends React.Component<Props, {}> {
 
   componentDidMount() {
     this.props.getState();
   }
 
   render() {
+    let props = this.props;
     return (
       <div className="main-area">
-        { !this.props.loggedIn && this.props.location.pathname !== '/login' ? <Redirect to='/login' /> : '' }
-        <Navigation location={ this.props.location } />
+        { props.loggedIn && props.location.pathname !== '/login' ? <Redirect to='/login' /> : '' }
+        <Navigation location={ props.location } />
         <div className="container"> 
             <Switch>
               <Route exact path='/about' component={ About }/>
@@ -35,7 +37,7 @@ class App extends React.Component {
               <Route path='/' component={ Home }/>
             </Switch>
         </div>
-        <Footer />
+        <Footer footerText="Язык Для Успеха 2017" />
       </div>
     );
   }
