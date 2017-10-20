@@ -2,6 +2,12 @@ module.exports = {
     entry: [
       './src/index.js'
     ],
+    output: {
+      path: __dirname + '/dist',
+      publicPath: '/',
+      filename: 'bundle.js'
+    },
+    devtool: 'cheap-module-source-map',
     module: {
         loaders: [{
           test: /\.jsx?$/,
@@ -12,9 +18,4 @@ module.exports = {
       resolve: {
         extensions: ['*', '.js', '.jsx']
       },
-    output: {
-      path: __dirname + '/dist',
-      publicPath: '/',
-      filename: 'bundle.js'
-    },
   };
