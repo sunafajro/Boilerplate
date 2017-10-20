@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Navigation;
 use app\models\User;
 use yii\web\Controller;
 use yii\web\Response;
@@ -86,8 +87,11 @@ class SiteController extends Controller
             if ($model->login()) {
                 return [
                     'result' => true,
-                    'userId' => Yii::$app->user->identity->id,
-                    'username' => Yii::$app->user->identity->username
+                    'loggedIn' => true,
+                    'profile' => [
+                        'userId' => Yii::$app->user->identity->id,
+                        'username' => Yii::$app->user->identity->username
+                    ]
                 ];
             } else {
                 return [
@@ -134,7 +138,8 @@ class SiteController extends Controller
         return [
             'result' => true,
             'loggedIn' => !Yii::$app->user->isGuest,
-            'profile' => User::getUserData()
+            'profile' => User::getUserData(),
+            'navigation' => Navigation::getNavLinks()
         ];
     }
 
