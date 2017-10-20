@@ -27,15 +27,19 @@ class App extends React.Component {
     return (
       <div className="main-area">
         { !this.props.loggedIn && this.props.location.pathname !== '/login' ? <Redirect to='/login' /> : '' }
-        <Navigation location={ this.props.location } />
-        <div className="container"> 
-            <Switch>
-              <Route exact path='/about' component={ About }/>
-              <Route exact path='/login' component={ Login }/>
-              <Route path='/' component={ Home }/>
-            </Switch>
-        </div>
+        { !this.props.fetching ?
+        <div> 
+          <Navigation location={ this.props.location } />
+          <div className="container"> 
+              <Switch>
+                <Route exact path='/about' component={ About }/>
+                <Route exact path='/login' component={ Login }/>
+                <Route path='/' component={ Home }/>
+              </Switch>
+          </div>
         <Footer />
+        </div>
+        : <div className="alert alert-warning">Подождите. Идет загрузка приложения...</div> }
       </div>
     );
   }
