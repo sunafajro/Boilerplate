@@ -14,8 +14,7 @@ class App extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     loggedIn: PropTypes.bool.isRequired,
-    userId: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
+    profile: PropTypes.object.isRequired,
     fetching: PropTypes.bool.isRequired,
   }
 
@@ -47,8 +46,7 @@ class App extends React.Component {
 
 const mapStateToProps = state => ({
   loggedIn: state.auth.loggedIn,
-  userId: state.auth.userId,
-  username: state.auth.username,
+  profile: state.auth.profile,
   fetching: state.auth.fetching,
 });
 
