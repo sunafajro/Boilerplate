@@ -1,65 +1,90 @@
-export const STATE_REQUESTED = 'STATE_REQUESTED';
-export const STATE = 'STATE';
-export const LOGIN_REQUESTED = 'LOGIN_REQUESTED';
 export const LOGIN = 'LOGIN';
-export const LOGOUT_REQUESTED = 'LOGOUT_REQUESTED';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAILED = 'LOGIN_FAILED';
+
 export const LOGOUT = 'LOGOUT';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+export const LOGOUT_FAILED = 'LOGOUT_FAILED';
+
+export const GET_STATE = 'GET_STATE';
+export const GET_STATE_SUCCESS = 'GET_STATE_SUCCESS';
+export const GET_STATE_FAILED = 'GET_STATE_FAILED';
 
 const initialState = {
   loggedIn: false,
   fetching: false,
-  userId: 0,
-  username: 'guest',
+  profile: {},
+  navigation: [],
   message: {}
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case LOGIN_REQUESTED:
+    case LOGIN:
       return {
         ...state,
         fetching: true
       }
   
-    case LOGIN:
+    case LOGIN_SUCCESS:
       return {
         ...state,
         fetching: false,
         loggedIn: action.loggedIn,
-        userId: action.userId,
-        username: action.username,
+        profile: action.profile,
         message: action.message
       }
 
-    case LOGOUT_REQUESTED:
+    case LOGIN_FAILED:
+      return {
+        ...state,
+        fetching: false,
+        message: action.message
+      }
+
+    case LOGOUT:
       return {
         ...state,
         fetching: true
       }
   
-    case LOGOUT:
+    case LOGOUT_SUCCESS:
       return {
         ...state,
         fetching: false,
-        loggedIn: action.loggedIn !== null ? action.loggedIn : state.loggedIn,
-        userId: action.userId !== null ? action.userId : state.userId,
-        username: action.username !== null ? action.username : state.username,
+        loggedIn: false,
+        profile: {},
         message: {}
       }
 
-    case STATE_REQUESTED:
+    case LOGOUT_FAILED:
+      return {
+        ...state,
+        fetching: false,
+        message: {}
+      }
+
+    case GET_STATE:
       return {
         ...state,
         fetching: true
       }
 
-    case STATE:
+    case GET_STATE_SUCCESS:
       return {
         ...state,
         fetching: false,
-        loggedIn: action.loggedIn !== null ? action.loggedIn : state.loggedIn,
-        userId: action.userId !== null ? action.userId : state.userId,
-        username: action.username !== null ? action.username : state.username
+        loggedIn: action.loggedIn,
+        profile: action.profile,
+        navigation: action.navigation,
+        message: {}
+      }
+
+    case GET_STATE_FAILED:
+      return {
+        ...state,
+        fetching: false,
+        message: {}
       }
 
     default:

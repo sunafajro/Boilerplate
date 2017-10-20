@@ -1,14 +1,19 @@
-export const STATE_REQUESTED = 'STATE_REQUESTED';
-export const STATE = 'STATE';
-export const LOGIN_REQUESTED = 'LOGIN_REQUESTED';
 export const LOGIN = 'LOGIN';
-export const LOGOUT_REQUESTED = 'LOGOUT_REQUESTED';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAILED = 'LOGIN_FAILED';
+
 export const LOGOUT = 'LOGOUT';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+export const LOGOUT_FAILED = 'LOGOUT_FAILED';
+
+export const GET_STATE = 'GET_STATE';
+export const GET_STATE_SUCCESS = 'GET_STATE_SUCCESS';
+export const GET_STATE_FAILED = 'GET_STATE_FAILED';
 
 export const login = ({ username, password }) => {
   return dispatch => {
     dispatch({
-      type: LOGIN_REQUESTED
+      type: LOGIN
     });
 
     const body = JSON.stringify({'LoginForm': { username, password }});
@@ -30,41 +35,35 @@ export const login = ({ username, password }) => {
       let r = response.json();
       throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
     })
-    .then(json => {
-      if (json.result) {
-        dispatch({
-          type: LOGIN,
-          userId: json.user_id,
-          username: json.username,
-          loggedIn: true,
-          message: { type: 'success', text: json.message }
-        });
-      } else {
-        dispatch({
-          type: LOGIN,
-          userId: 0,
-          username: 'guest',
-          loggedIn: false,
-          message: { type: 'fail', text: json.message }
-        });
-      }
-    })
-    .catch(err => {
-      dispatch({
-        type: LOGIN,
-        userId: 0,
-        username: 'guest',
-        loggedIn: false,
-        message: { type: 'fail', text: err }
-      });
-    });
+    .then(result => dispatch(loginSuccess(result)))
+    .catch(err   => dispatch(loginFailed(err)));
   }
 };
+
+export const loginSuccess = (result) => {
+  return dispatch => {
+    dispatch({
+      type: LOGIN_SUCCESS,
+      loggedIn: result.loggedIn,
+      profile: result.profile,
+      message: { type: 'success', text: result.message }
+    });
+  }
+}
+
+export const loginFailed = (error) => {
+  return dispatch => {
+    dispatch({
+      type: LOGIN_FAILED,
+      message: { type: 'fail', text: error }
+    });
+  }
+}
 
 export const logout = () => {
   return dispatch => {
     dispatch({
-      type: LOGOUT_REQUESTED
+      type: LOGOUT
     });
 
     fetch('/api/logout',
@@ -83,41 +82,33 @@ export const logout = () => {
       let r = response.json();
       throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
     })
-    .then(json => {
-      if (json.result) {
-        dispatch({
-          type: LOGOUT,
-          userId: 0,
-          username: 'guest',
-          loggedIn: false,
-          message: { type: 'success', text: json.message }
-        });
-      } else {
-        dispatch({
-          type: LOGOUT,
-          userId: null,
-          username: null,
-          loggedIn: null,
-          message: { type: 'fail', text: json.message }
-        });
-      }
-    })
-    .catch(err => {
-      dispatch({
-        type: LOGOUT,
-        userId: null,
-        username: null,
-        loggedIn: null,
-        message: { type: 'fail', text: err }
-      });
-    });
+    .then(result => dispatch(logoutSuccess(result)))
+    .catch(err   => dispatch(logoutFailed(err)));
   }
 };
+
+export const logoutSuccess = (result) => {
+  return dispatch => {
+    dispatch({
+      type: LOGOUT_SUCCESS,
+      message: { type: 'success', text: result.message }
+    });
+  }
+}
+
+export const logoutFailed = (error) => {
+  return dispatch => {
+    dispatch({
+      type: LOGOUT_FAILED,
+      message: { type: 'fail', text: error }
+    });
+  }
+}
 
 export const getState = () => {
   return dispatch => {
     dispatch({
-      type: STATE_REQUESTED
+      type: GET_STATE
     });
 
     fetch('/api/state',
@@ -136,30 +127,28 @@ export const getState = () => {
       let r = response.json();
       throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
     })
-    .then(json => {
-      if (json.result) {
-        dispatch({
-          type: STATE,
-          userId: json.profile.hasOwnProperty('id') ? parseInt(json.profile.id) : null,
-          username: json.profile.hasOwnProperty('username') ? json.profile.username : null,
-          loggedIn: json.loggedIn
-        });
-      } else {
-        dispatch({
-          type: STATE,
-          userId: null,
-          username: null,
-          loggedIn: null
-        });
-      }
-    })
-    .catch(err => {
-      dispatch({
-        type: STATE,
-        userId: null,
-        username: null,
-        loggedIn: null
-      });
-    });
+    .then(result => dispatch(getStateSuccess(result)))
+    .catch(err => dispatch(getStateFailed(err)));
   }
 };
+
+export const getStateSuccess = (result) => {
+  return dispatch => {
+    dispatch({
+      type: GET_STATE_SUCCESS,
+      loggedIn: result.loggedIn,
+      profile: result.profile,
+      navigation: result.navigation,
+      message: { type: 'success', text: result.message }
+    });
+  }
+}
+
+export const getStateFailed = (error) => {
+  return dispatch => {
+    dispatch({
+      type: GET_STATE_FAILED,
+      message: { type: 'fail', text: error }
+    });
+  }
+}
