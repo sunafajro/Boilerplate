@@ -65,14 +65,28 @@ class Message extends \yii\db\ActiveRecord
     }
 
     public static function getAds() {
-        $ads = (new \yii\db\Query())
-        ->select('m.id as id, m.name as title, m.description as body, m.data as date, m.files as fiels')
+        $result = [];
+        $tmp_ads = (new \yii\db\Query())
+        ->select('m.id as id, m.name as title, m.description as body, m.data as date, m.files as files')
         ->from('calc_message m')
         ->where('calc_messwhomtype=:twelve AND send=:one', [':twelve' => 12, ':one' => 1])
         ->orderby(['m.data' => SORT_DESC])
         ->limit(5)
         ->all();
+        
+        if (!empty($tmp_ads)) {
+            $result['jumbotron'] = $tmp_ads[0];
+            $result['jumbotron']['anounce'] = strip_tags($result['jumbotron']['body']);
+            $result['news'] = [];
+            unset($tmp_ads[0]);
+            foreach($tmp_ads as $a) {
+                $tmp = $a;
+                $tmp['anounce'] = strip_tags($tmp['body']);
+                $result['news'][] = $tmp;
 
-        return $ads;
+            }               
+        }
+
+        return $result;
     }
 }

@@ -35,13 +35,16 @@ class MessageController extends Controller
         }
     }
 
+    /* возвращает список последних новостей */
     public function actionGetAds()
     {
         $this->layout = false;
         Yii::$app->response->format = Response::FORMAT_JSON;
+        $ads = Message::getAds();
         return [
             'result' => true,
-            'ads' => Message::getAds()
+            'jumbotron' => $ads['jumbotron'],
+            'news' => $ads['news'],
         ];
     }
 }
