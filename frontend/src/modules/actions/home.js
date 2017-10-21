@@ -1,10 +1,11 @@
-export const GET_HOME_REQUESTED = 'GET_HOME_REQUESTED';
 export const GET_HOME = 'GET_HOME';
+export const GET_HOME_SUCCESS = 'GET_HOME_SUCCESS';
+export const GET_HOME_FAILED = 'GET_HOME_FAILED';
 
 export const getHome = () => {
   return dispatch => {
     dispatch({
-      type: GET_HOME_REQUESTED
+      type: GET_HOME
     });
 
     fetch('/api/get-ads',
@@ -19,53 +20,31 @@ export const getHome = () => {
     .then(response => {
       if (response.ok) {
         return response.json();
-      } else {
-        if(isJson(response)) {
-          let r = response.json();
-        }
-        throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
-      }      
-    })
-    .then(json => {
-      if (json.result) {
-        let jumbotron = [];
-        let news = [];
-        if (json.ads.length) {
-          jumbotron = [ json.ads[0] ];
-          news = [ ...json.ads ];
-          news.shift();
-        }
-        dispatch({
-          type: GET_HOME,
-          jumbotron: jumbotron,
-          news: news,
-          message: { type: 'success', text: json.message}
-        });
-      } else {
-        dispatch({
-          type: GET_HOME,
-          jumbotron: [],
-          news: [],
-          message: { type: 'fail', text: json.message ? json.message : 'Ошибка получения новостей!' }
-        });
       }
+      let r = response.json();
+      throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');    
     })
-    .catch(err => {
-      dispatch({
-        type: GET_HOME,
-        jumbotron: [],
-        news: [],
-        message: { type: 'fail', text: err }
-      });
+    .then(result => dispatch(getHomeSuccess(result)))
+    .catch(err => dispatch(getHomeFailed(err)));
+  }
+};
+
+export const getHomeSuccess = (result) => {
+  return dispatch => {
+    dispatch({
+      type: GET_HOME_SUCCESS,
+      jumbotron: result.jumbotron,
+      news: result.news,
+      message: { type: 'success', text: result.message}
     });
   }
 };
 
-function isJson(str) {
-  try {
-      JSON.parse(str);
-  } catch (e) {
-      return false;
+export const getHomeFailed = (err) => {
+  return dispatch => {
+    dispatch({
+      type: GET_HOME_FAILED,
+      message: { type: 'fail', text: err }
+    });
   }
-  return true;
-}
+};

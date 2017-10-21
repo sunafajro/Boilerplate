@@ -3,14 +3,14 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getHome } from '../../modules/actions/home';
-import { Jumbotron } from './components/jumbotron';
-import { NewsRow } from './components/news-grid';
+import Jumbotron from './components/jumbotron';
+import NewsRow from './components/news-grid';
 
 type Props = {
   loggedIn: boolean,
   fetching: boolean,  
-  jumbotron: { id: number, title: string, body: string },
-  news: Array<{ id: number, title: string, body: string }>,
+  jumbotron: Object,
+  news: Array<Object>,
   getHome: Function
 };
 
