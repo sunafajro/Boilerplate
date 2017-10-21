@@ -1,5 +1,5 @@
+/* @flow */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getState } from '../../modules/actions/auth';
@@ -10,14 +10,17 @@ import { About } from '../about/index';
 import Login from '../login/index';
 import { Footer } from '../footer/index';
 
-class App extends React.Component {
-  static propTypes = {
-    location: PropTypes.object.isRequired,
-    loggedIn: PropTypes.bool.isRequired,
-    profile: PropTypes.object.isRequired,
-    fetching: PropTypes.bool.isRequired,
-  }
+type Props = {
+  fetching: boolean,
+  loggedIn: boolean,
+  profile: { userId: number, username: string },
+  location: Object,
+  history: Object,
+  match: Object,
+  getState: Function
+};
 
+class App extends React.Component<Props, {}> {
   componentDidMount() {
     this.props.getState();
   }
