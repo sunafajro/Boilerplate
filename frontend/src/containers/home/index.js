@@ -1,10 +1,12 @@
 /* @flow */
-import React from 'react';
+import React       from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getHome } from '../../modules/actions/home';
-import Jumbotron from './components/jumbotron';
-import NewsRow from './components/news-grid';
+import Jumbotron   from './components/jumbotron';
+import NewsRow     from './components/news-grid';
+import UserBlock   from '../userblock';
+import InfoBlock   from './components/info-block';
 
 type Props = {
   loggedIn: boolean,
@@ -23,11 +25,17 @@ class Home extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div>
+      <div className="content-top-padding">
         { !this.props.fetching ?
-          <div>
+          <div className="row">
+            <div className="col-sm-9">
             { <Jumbotron jumbotron={ this.props.jumbotron } /> }
             { <NewsRow news={ this.props.news } /> }
+            </div>
+            <div className="col-sm-3">
+              <UserBlock />
+              <InfoBlock />
+            </div>
           </div>
           : <div className="alert alert-warning" role="alert">Загружаем данные...</div> }
       </div>
