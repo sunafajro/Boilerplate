@@ -71,7 +71,7 @@ class Message extends \yii\db\ActiveRecord
         ->from('calc_message m')
         ->where('calc_messwhomtype=:twelve AND send=:one', [':twelve' => 12, ':one' => 1])
         ->orderby(['m.data' => SORT_DESC])
-        ->limit(5)
+        ->limit(4)
         ->all();
         
         if (!empty($tmp_ads)) {

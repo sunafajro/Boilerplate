@@ -19,7 +19,7 @@ class NewsRow extends React.Component<Props, {}> {
       <div className="row">
         { props.news.map(item => {
           return (
-            <div key={ item.id } className="col-sm-3">
+            <div key={ item.id } className="col-sm-4">
               <h2>{ item.title }</h2>
               <p>{ item.anounce }</p>
               <p><a className="btn btn-secondary" href="#" role="button">View details »</a></p>
