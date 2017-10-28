@@ -17,7 +17,7 @@ class Jumbotron extends React.Component<Props, {}> {
     const props = this.props;
     return (
       <div className="jumbotron">
-        <h1 className="display-3">{ props.jumbotron.title }</h1>
+        <h1 className="display-4">{ props.jumbotron.title }</h1>
         <p className="lead">{ props.jumbotron.anounce }</p>
         <p><a className="btn btn-lg btn-success" href="#" role="button">View details</a></p>
       </div>
