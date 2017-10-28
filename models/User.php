@@ -3,39 +3,33 @@
 namespace app\models;
 
 use Yii;
+use app\models\Client;
 
 class User extends \yii\base\Object implements \yii\web\IdentityInterface
 {
     public $id;
     public $username;
     public $password;
+    public $fullname;
+    public $phone;
+    public $email;
+    public $student_id;
     public $authKey;
     public $accessToken;
-
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
+    public $last_login_date;
 
     /**
      * @inheritdoc
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        if (($user = Client::findUserById($id)) !== NULL) {
+            $user['authKey']     = NULL;
+            $user['accessToken'] = NULL;
+            return new static($user);
+        } else {
+            return NULL;
+        }
     }
 
     /**
@@ -43,11 +37,11 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
+        // foreach (self::$users as $user) {
+        //     if ($user['accessToken'] === $token) {
+        //         return new static($user);
+        //     }
+        // }
 
         return null;
     }
@@ -60,13 +54,13 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
      */
     public static function findByUsername($username)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
+        if (($user = Client::findUserByUsername($username)) !== NULL) {            
+            $user['authKey']     = NULL;
+            $user['accessToken'] = NULL;
+            return new static($user);
+        } else {
+            return NULL;
         }
-
-        return null;
     }
 
     /**
@@ -113,8 +107,12 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
             ];
         } else {
             return [
-                'id' => Yii::$app->user->identity->id,
-                'username' => Yii::$app->user->identity->username,
+                'id'        => Yii::$app->user->identity->id,
+                'studentId' => Yii::$app->user->identity->student_id,
+                'username'  => Yii::$app->user->identity->username,
+                'fullname'  => Yii::$app->user->identity->fullname,
+                'phone'     => Yii::$app->user->identity->phone,
+                'email'     => Yii::$app->user->identity->email
             ];
         } 
     }

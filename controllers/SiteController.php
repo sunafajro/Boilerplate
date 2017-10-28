@@ -6,6 +6,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
+use app\models\Contact;
 use app\models\ContactForm;
 use app\models\Navigation;
 use app\models\User;
@@ -89,9 +90,14 @@ class SiteController extends Controller
                     'result' => true,
                     'loggedIn' => true,
                     'profile' => [
-                        'userId' => Yii::$app->user->identity->id,
-                        'username' => Yii::$app->user->identity->username
-                    ]
+                        'id'        => Yii::$app->user->identity->id,
+                        'studentId' => Yii::$app->user->identity->student_id,
+                        'username'  => Yii::$app->user->identity->username,
+                        'fullname'  => Yii::$app->user->identity->fullname,
+                        'phone'     => Yii::$app->user->identity->phone,
+                        'email'     => Yii::$app->user->identity->email
+                    ],
+                    'contacts' => Contact::getContacts()
                 ];
             } else {
                 return [
@@ -136,9 +142,10 @@ class SiteController extends Controller
         $this->layout = false;
         Yii::$app->response->format = Response::FORMAT_JSON;
         return [
-            'result' => true,
-            'loggedIn' => !Yii::$app->user->isGuest,
-            'profile' => User::getUserData(),
+            'result'     => true,
+            'loggedIn'   => !Yii::$app->user->isGuest,
+            'profile'    => User::getUserData(),
+            'contacts'   => Contact::getContacts(),
             'navigation' => Navigation::getNavLinks()
         ];
     }
