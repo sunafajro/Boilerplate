@@ -12,7 +12,7 @@ class Navigation extends React.Component {
     return (
       <nav className="navbar navbar-expand-lg navbar-light fixed-top bg-light">
         <div className="container">
-          <Link className="navbar-brand" to="/">My application</Link>
+          <Link className="navbar-brand" to="/">Личный кабинет клиента</Link>
           <button
             className="navbar-toggler"
             type="button"
