@@ -26,7 +26,7 @@ class Login extends React.Component {
         valid: null
       }); 
       
-      this.props.login({ username, password });
+      this.props.login(username, password);
     }
   }
 
