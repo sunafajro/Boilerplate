@@ -33,3 +33,7 @@ tests/_support/_generated
 /frontend/dist
 /frontend/lib
 /frontend/node_modules
+
+# webroot
+/web/fa
+/web/js
