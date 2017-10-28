@@ -19,6 +19,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css',
+        'fa/css/font-awesome.min.css',
         'css/sticky-footer-navbar.css',
         'css/site.css',
     ];
