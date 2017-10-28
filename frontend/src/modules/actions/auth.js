@@ -1,3 +1,5 @@
+import md5 from 'js-md5';
+
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
@@ -10,13 +12,18 @@ export const GET_STATE = 'GET_STATE';
 export const GET_STATE_SUCCESS = 'GET_STATE_SUCCESS';
 export const GET_STATE_FAILED = 'GET_STATE_FAILED';
 
-export const login = ({ username, password }) => {
+export const login = (username, password) => {
   return dispatch => {
     dispatch({
       type: LOGIN
     });
 
-    const body = JSON.stringify({'LoginForm': { username, password }});
+    const body = {
+      'LoginForm': {
+         username: username, 
+         password: md5(password) 
+      }
+    };
 
     fetch('/api/login',
     {
@@ -26,7 +33,7 @@ export const login = ({ username, password }) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body
+      body: JSON.stringify(body)
     })
     .then(response => {
       if (response.ok) {
@@ -43,10 +50,11 @@ export const login = ({ username, password }) => {
 export const loginSuccess = (result) => {
   return dispatch => {
     dispatch({
-      type: LOGIN_SUCCESS,
+      type:     LOGIN_SUCCESS,
       loggedIn: result.loggedIn,
-      profile: result.profile,
-      message: { type: 'success', text: result.message }
+      profile:  result.profile,
+      contacts: result.contacts,
+      message:  { type: 'success', text: result.message }
     });
   }
 }
@@ -135,11 +143,12 @@ export const getState = () => {
 export const getStateSuccess = (result) => {
   return dispatch => {
     dispatch({
-      type: GET_STATE_SUCCESS,
-      loggedIn: result.loggedIn,
-      profile: result.profile,
+      type:       GET_STATE_SUCCESS,
+      loggedIn:   result.loggedIn,
+      profile:    result.profile,
+      contacts:   result.contacts,
       navigation: result.navigation,
-      message: { type: 'success', text: result.message }
+      message:    { type: 'success', text: result.message }
     });
   }
 }
