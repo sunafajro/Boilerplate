@@ -97,6 +97,7 @@ class SiteController extends Controller
                         'phone'     => Yii::$app->user->identity->phone,
                         'email'     => Yii::$app->user->identity->email
                     ],
+                    'navigation' => Navigation::getNavLinks(),
                     'contacts' => Contact::getContacts()
                 ];
             } else {
@@ -127,6 +128,7 @@ class SiteController extends Controller
         if (Yii::$app->user->logout()) {
             return [
                 'result' => true,
+                'navigation' => Navigation::getNavLinks(),
                 'message' => 'Успешный выход.'
             ];
         } else {
