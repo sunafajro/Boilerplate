@@ -39,8 +39,7 @@ export const login = (username, password) => {
       if (response.ok) {
         return response.json();
       }
-      let r = response.json();
-      throw new Error(r.message ? r.message : 'Внутренняя ошибка сервера!');
+      throw new Error('Ошибка входа!');
     })
     .then(result => dispatch(loginSuccess(result)))
     .catch(err   => dispatch(loginFailed(err)));
@@ -54,6 +53,7 @@ export const loginSuccess = (result) => {
       loggedIn: result.loggedIn,
       profile:  result.profile,
       contacts: result.contacts,
+      navigation: result.navigation,
       message:  { type: 'success', text: result.message }
     });
   }
@@ -63,7 +63,7 @@ export const loginFailed = (error) => {
   return dispatch => {
     dispatch({
       type: LOGIN_FAILED,
-      message: { type: 'fail', text: error }
+      message: { type: 'fail', text: error.message }
     });
   }
 }
@@ -99,6 +99,8 @@ export const logoutSuccess = (result) => {
   return dispatch => {
     dispatch({
       type: LOGOUT_SUCCESS,
+      contacts: result.contacts,
+      navigation: result.navigation,
       message: { type: 'success', text: result.message }
     });
   }

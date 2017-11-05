@@ -34,6 +34,7 @@ export default (state = initialState, action) => {
         loggedIn: action.loggedIn,
         profile:  action.profile,
         contacts: action.contacts,
+        navigation: action.navigation,
         message:  action.message
       }
 
@@ -56,6 +57,8 @@ export default (state = initialState, action) => {
         fetching: false,
         loggedIn: false,
         profile:  {},
+        contacts:   action.contacts,
+        navigation: action.navigation,
         message:  {}
       }
 
@@ -78,7 +81,7 @@ export default (state = initialState, action) => {
         fetching:   false,
         loggedIn:   action.loggedIn,
         profile:    action.profile,
-        contacts:    action.contacts,
+        contacts:   action.contacts,
         navigation: action.navigation,
         message:    {}
       }
