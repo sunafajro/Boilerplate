@@ -101,6 +101,7 @@ class SiteController extends Controller
                     'contacts' => Contact::getContacts()
                 ];
             } else {
+                Yii::$app->response->statusCode = 400;
                 return [
                     'result' => false,
                     'message' => 'Неправильный логин или пароль!'
