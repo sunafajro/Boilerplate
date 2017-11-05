@@ -60,6 +60,6 @@ class Contact extends Model
             ]
         ];
 
-        return $contacts;
+        return Yii::$app->user->isGuest ? [] : $contacts;
     }
 }
