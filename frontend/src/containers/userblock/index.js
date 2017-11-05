@@ -16,7 +16,7 @@ type Props = {
 
 class UserBlock extends React.Component<Props, {}> {
   render () {
-    let props = this.props;
+    const props = this.props;
     return (
       <div className="card bg-info border-info text-white" style={{ marginBottom: '10px' }}>
         <div className="card-body">
