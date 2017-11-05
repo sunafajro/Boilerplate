@@ -1,14 +1,28 @@
+/* @flow */
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { login } from '../../modules/actions/auth';
 
-class Login extends React.Component {
+type Props = {
+  loggedIn: boolean,
+  fetching: boolean,
+  message: {type: string, text: string},
+  login: Function
+};
+
+type State = {
+  username: string,
+  password: string,
+  valid: boolean
+};
+
+class Login extends React.Component<Props, State> {
   state = {
     username: '',
     password: '',
-    valid: null
+    valid: true
   }
 
   handleSubmit = (e) => {
@@ -23,7 +37,7 @@ class Login extends React.Component {
       });
     } else {
       this.setState({
-        valid: null
+        valid: true
       }); 
       
       this.props.login(username, password);
@@ -31,9 +45,11 @@ class Login extends React.Component {
   }
 
   render() {
+    const state = this.state;
+    const props = this.props;
     return (
       <div>
-        { this.props.loggedIn ? 
+        { props.loggedIn ? 
           <Redirect to="/home" push /> :
           <div>
             <ol className="breadcrumb">
@@ -41,14 +57,14 @@ class Login extends React.Component {
               <li className="breadcrumb-item active">Login</li>
             </ol>
             <h3>Login page</h3>
-            { this.state.valid === false ?
+            { state.valid === false ?
                 <div className="alert alert-danger">Поля формы должны быть заполнены!</div>
               : '' }
-            { Object.keys(this.props.message).length ?
+            { Object.keys(props.message).length ?
                 <div
-                  className={ this.props.message.type === 'fail' ? 'alert alert-danger' : 'alert alert-success' }
+                  className={ props.message.type === 'fail' ? 'alert alert-danger' : 'alert alert-success' }
                 >
-                { this.props.message.text }
+                { props.message.text }
                 </div>
               : '' }
             <form onSubmit={ this.handleSubmit }>
@@ -59,9 +75,9 @@ class Login extends React.Component {
                   className="form-control"
                   id="usernameInput"
                   placeholder="Enter username"
-                  value={ this.state.username }
+                  value={ state.username }
                   onChange={ (e) => this.setState({ username: e.target.value }) }
-                  disabled={ this.props.fetching }
+                  disabled={ props.fetching }
                 />
               </div>
               <div className="form-group">
@@ -71,15 +87,15 @@ class Login extends React.Component {
                   className="form-control"
                   id="passwordInput"
                   placeholder="Password"
-                  value={ this.state.password }
+                  value={ state.password }
                   onChange={ (e) => this.setState({ password: e.target.value }) }
-                  disabled={ this.props.fetching }
+                  disabled={ props.fetching }
                 />
               </div>
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={ this.props.fetching }
+                disabled={ props.fetching }
               >
                 Submit
               </button>
