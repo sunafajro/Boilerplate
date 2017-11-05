@@ -1,9 +1,10 @@
 /* @flow */
-import React from 'react';
+import React from "react";
+import Modal from "./modal";
 
 type Props = {
   news: Array<{
-    id: number,
+    id: string,
     title: string,
     anounce: string,
     body: string,
@@ -13,22 +14,32 @@ type Props = {
 };
 
 class NewsRow extends React.Component<Props, {}> {
-  render () {
+  render() {
     const props = this.props;
     return (
       <div className="row">
-        { props.news.map(item => {
+        {props.news.map(item => {
           return (
-            <div key={ item.id } className="col-sm-4">
-              <h2>{ item.title }</h2>
-              <p>{ item.anounce }</p>
-              <p><a className="btn btn-secondary" href="#" role="button">View details »</a></p>
+            <div key={item.id} className="col-sm-4">
+              <h2>{item.title}</h2>
+              <p>{item.anounce}</p>
+              <p>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-toggle="modal"
+                  data-target={"#newsModal" + item.id}
+                >
+                  Еще...
+                </button>
+              </p>
+              <Modal id={item.id} title={item.title} body={item.body} />
             </div>
           );
         })}
       </div>
     );
   }
-};
+}
 
 export default NewsRow;
