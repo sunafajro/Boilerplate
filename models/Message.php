@@ -76,17 +76,30 @@ class Message extends \yii\db\ActiveRecord
         
         if (!empty($tmp_ads)) {
             $result['jumbotron'] = $tmp_ads[0];
-            $result['jumbotron']['anounce'] = strip_tags($result['jumbotron']['body']);
+            $result['jumbotron']['anounce'] = static::createAnounce($result['jumbotron']['body']);
+            $result['jumbotron']['body'] = strip_tags($result['jumbotron']['body']);   
             $result['news'] = [];
             unset($tmp_ads[0]);
             foreach($tmp_ads as $a) {
                 $tmp = $a;
-                $tmp['anounce'] = strip_tags($tmp['body']);
+                $tmp['anounce'] = static::createAnounce($tmp['body']);
+                $tmp['body'] = strip_tags($tmp['body']);
                 $result['news'][] = $tmp;
-
             }               
         }
 
         return $result;
+    }
+
+    protected static function createAnounce($text)
+    {
+        $anounce = '';
+        if(preg_match('/<!--break-->.*$/isU', $text)){
+            $anounce = preg_replace('/<!--break-->.*$/isU', '', $text);
+            $anounce = strip_tags($anounce);
+        } else {
+            $anounce = strip_tags($text);
+        }
+        return $anounce;
     }
 }
