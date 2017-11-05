@@ -6,8 +6,8 @@ import { getState } from '../../modules/actions/auth';
 import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import Navigation from '../navigation/index';
 import Home from '../home/index';
-import { About } from '../about/index';
 import Login from '../login/index';
+import { Profile } from '../profile/index';
 import { Footer } from '../footer/index';
 
 type Props = {
@@ -34,7 +34,7 @@ class App extends React.Component<Props, {}> {
           <Navigation location={ this.props.location } />
           <div className="container"> 
               <Switch>
-                <Route exact path='/about' component={ About }/>
+                <Route exact path='/profile' component={ Profile }/>
                 <Route exact path='/login' component={ Login }/>
                 <Route path='/' component={ Home }/>
               </Switch>
