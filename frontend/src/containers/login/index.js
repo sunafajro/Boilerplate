@@ -3,49 +3,35 @@ import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { login } from '../../modules/actions/auth';
+import { login, updateState } from '../../modules/actions/auth';
 
 type Props = {
+  loginForm: { username: string, password: string, valid: boolean},
   loggedIn: boolean,
   fetching: boolean,
   message: {type: string, text: string},
-  login: Function
+  labels: Object,
+  updateState: (value: boolean, key: string) => void,
+  login: (username: string, password: string) => void
 };
 
-type State = {
-  username: string,
-  password: string,
-  valid: boolean
-};
-
-class Login extends React.Component<Props, State> {
-  state = {
-    username: '',
-    password: '',
-    valid: true
-  }
-
+class Login extends React.Component<Props, {}> {
+  /* обрабатываем событие отправки формы */
   handleSubmit = (e) => {
     e.preventDefault();
 
-    let username = this.state.username;
-    let password = this.state.password;
+    const username = this.props.loginForm.username;
+    const password = this.props.loginForm.password;
 
-    if (username === '' || password === '') {
-      this.setState({
-        valid: false
-      });
+    if (!username || !password) {
+      this.props.updateState(false, 'valid');
     } else {
-      this.setState({
-        valid: true
-      }); 
-      
+      this.props.updateState(true, 'valid'); 
       this.props.login(username, password);
     }
   }
 
   render() {
-    const state = this.state;
     const props = this.props;
     return (
       <div>
@@ -53,12 +39,12 @@ class Login extends React.Component<Props, State> {
           <Redirect to="/home" push /> :
           <div>
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"><Link to='/'>Home</Link></li>
-              <li className="breadcrumb-item active">Login</li>
+              <li className="breadcrumb-item"><Link to='/'>{ props.labels.homeBreadcrumbs }</Link></li>
+              <li className="breadcrumb-item active">{ props.labels.loginBreadcrumbs }</li>
             </ol>
-            <h3>Login page</h3>
-            { state.valid === false ?
-                <div className="alert alert-danger">Поля формы должны быть заполнены!</div>
+            <h3>{ props.labels.loginPageTitle }</h3>
+            { props.loginForm.valid === false ?
+                <div className="alert alert-danger">{ props.labels.formEmptyFieldsAlert }</div>
               : '' }
             { Object.keys(props.message).length ?
                 <div
@@ -69,26 +55,26 @@ class Login extends React.Component<Props, State> {
               : '' }
             <form onSubmit={ this.handleSubmit }>
               <div className="form-group">
-                <label htmlFor="usernameInput">Username</label>
+                <label htmlFor="usernameInput">{ props.labels.usernameLabel }</label>
                 <input
                   type="text"
                   className="form-control"
                   id="usernameInput"
                   placeholder="Enter username"
-                  value={ state.username }
-                  onChange={ (e) => this.setState({ username: e.target.value }) }
+                  value={ props.loginForm.username }
+                  onChange={ (e) => this.props.updateState(e.target.value, 'username') }
                   disabled={ props.fetching }
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="passwordInput">Password</label>
+                <label htmlFor="passwordInput">{ props.labels.passwordLabel }</label>
                 <input
                   type="password"
                   className="form-control"
                   id="passwordInput"
                   placeholder="Password"
-                  value={ state.password }
-                  onChange={ (e) => this.setState({ password: e.target.value }) }
+                  value={ props.loginForm.password }
+                  onChange={ (e) => this.props.updateState(e.target.value, 'password') }
                   disabled={ props.fetching }
                 />
               </div>
@@ -97,7 +83,7 @@ class Login extends React.Component<Props, State> {
                 className="btn btn-primary"
                 disabled={ props.fetching }
               >
-                Submit
+                { props.labels.submitBtnLabel}
               </button>
             </form>
           </div>
@@ -108,12 +94,15 @@ class Login extends React.Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
+  loginForm: state.auth.loginForm,
   loggedIn: state.auth.loggedIn,
   fetching: state.auth.fetching,
   message: state.auth.message,
+  labels: state.auth.labels
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  updateState,
   login
 }, dispatch);
 
