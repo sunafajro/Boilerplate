@@ -6,12 +6,12 @@ import { getState } from '../../../modules/actions/auth';
 
 type Props = {
   contacts: Array<{
-    id:      string,
-    city:    string,
+    id: string,
+    city: string,
     offices: Array<{
-      id:      string,
-      address: string,
-      phone:   string
+    id: string,
+    address: string,
+    phone: string
     }>
   }>
 };
