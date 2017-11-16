@@ -145,11 +145,20 @@ class SiteController extends Controller
         $this->layout = false;
         Yii::$app->response->format = Response::FORMAT_JSON;
         return [
-            'result'     => true,
-            'loggedIn'   => !Yii::$app->user->isGuest,
-            'profile'    => User::getUserData(),
-            'contacts'   => Contact::getContacts(),
-            'navigation' => Navigation::getNavLinks()
+            'result' => true,
+            'loggedIn' => !Yii::$app->user->isGuest,
+            'profile' => User::getUserData(),
+            'contacts' => Contact::getContacts(),
+            'navigation' => Navigation::getNavLinks(),
+            'labels' => [
+                'homeBreadcrumbs' => 'Главная',
+                'loginBreadcrumbs' => 'Вход',
+                'loginPageTitle' => 'Форма входа',
+                'formEmptyFieldsAlert' => 'Поля формы должны быть заполнены!',
+                'usernameLabel' => 'Логин',
+                'passwordLabel' => 'Пароль',
+                'submitBtnLabel' => 'Войти'
+            ]
         ];
     }
 
