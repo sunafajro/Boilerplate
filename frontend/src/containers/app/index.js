@@ -7,7 +7,7 @@ import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import Navigation from '../navigation/index';
 import Home from '../home/index';
 import Login from '../login/index';
-import { Profile } from '../profile/index';
+import Profile from '../profile/index';
 import { Footer } from '../footer/index';
 
 type Props = {

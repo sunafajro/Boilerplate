@@ -39,7 +39,7 @@ const initialState: State = {
   loginForm: {
     username: "",
     password: "",
-    valid: ""
+    valid: true
   }
 };
 
