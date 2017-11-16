@@ -31,4 +31,5 @@ tests/_support/_generated
 
 # react frontend
 /frontend/dist
+/frontend/lib
 /frontend/node_modules
