@@ -1,6 +1,4 @@
-export const GET_HOME = 'GET_HOME';
-export const GET_HOME_SUCCESS = 'GET_HOME_SUCCESS';
-export const GET_HOME_FAILED = 'GET_HOME_FAILED';
+import { GET_HOME, GET_HOME_SUCCESS, GET_HOME_FAILED } from '../actions/home';
 
 const initialState = {
   jumbotron: {},
@@ -23,7 +21,7 @@ export default (state = initialState, action) => {
         jumbotron: action.jumbotron,
         news: action.news,
         fetching: false,
-        message: action.message
+        message: {}
       }
 
     case GET_HOME_FAILED:

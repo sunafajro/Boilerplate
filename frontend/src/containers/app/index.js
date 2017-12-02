@@ -1,5 +1,5 @@
-/* @flow */
-import React from 'react';
+import React, {Component} from 'react';
+import { bool, func, object } from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getState } from '../../modules/actions/auth';
@@ -10,34 +10,33 @@ import Login from '../login/index';
 import Profile from '../profile/index';
 import { Footer } from '../footer/index';
 
-type Props = {
-  fetching: boolean,
-  loggedIn: boolean,
-  profile: { userId: number, username: string },
-  location: Object,
-  history: Object,
-  match: Object,
-  getState: Function
-};
+class App extends Component {
+  static propTypes = {
+    fetching: bool.isRequired,
+    location: object.isRequired,
+    loggedIn: bool.isRequired,
+    profile: object.isRequired,
+    getState: func.isRequired
+  }
 
-class App extends React.Component<Props, {}> {
   componentDidMount() {
     this.props.getState();
   }
 
   render() {
+    const { fetching, location, loggedIn } = this.props;
     return (
       <div className="main-area">
-        { !this.props.loggedIn && this.props.location.pathname !== '/login' ? <Redirect to='/login' /> : '' }
-        { !this.props.fetching ?
+        { !loggedIn && location.pathname !== '/login' ? <Redirect to='/login' /> : '' }
+        { !fetching ?
         <div> 
-          <Navigation location={ this.props.location } />
+          <Navigation location={ location } />
           <div className="container"> 
-              <Switch>
-                <Route exact path='/profile' component={ Profile }/>
-                <Route exact path='/login' component={ Login }/>
-                <Route path='/' component={ Home }/>
-              </Switch>
+            <Switch>
+              <Route exact path='/profile' component={ Profile }/>
+              <Route exact path='/login' component={ Login }/>
+              <Route path='/' component={ Home }/>
+            </Switch>
           </div>
         <Footer />
         </div>

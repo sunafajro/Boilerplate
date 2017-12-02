@@ -1,22 +1,24 @@
-/* @flow */
-import React       from 'react';
+import React, { Component } from 'react';
+import { array, bool, func, object } from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getHome } from '../../modules/actions/home';
-import Jumbotron   from './components/jumbotron';
-import NewsRow     from './components/news-grid';
-import UserBlock   from '../userblock';
-import InfoBlock   from './components/info-block';
+import { Jumbotron } from './components/Jumbotron';
+import { NewsRow } from './components/NewsRow';
+import { UserBlock } from '../userblock';
+import { InfoBlock } from './components/InfoBlock';
 
-type Props = {
-  loggedIn: boolean,
-  fetching: boolean,  
-  jumbotron: Object,
-  news: Array<Object>,
-  getHome: Function
-};
+class Home extends Component {
+  static propTypes = {
+    contacts: array.isRequired,
+    fetching: bool.isRequired,
+    getHome: func.isRequired,
+    jumbotron: object.isRequired,
+    loggedIn: bool.isRequired,
+    news: array.isRequired,
+    profile: object.isRequired
+  }
 
-class Home extends React.Component<Props, {}> {
   componentDidMount() {
     if (this.props.loggedIn) {
       this.props.getHome();
@@ -24,17 +26,18 @@ class Home extends React.Component<Props, {}> {
   }
 
   render() {
+    const { contacts, fetching, jumbotron, news, profile } = this.props;
     return (
       <div className="content-top-padding">
-        { !this.props.fetching ?
+        { !fetching ?
           <div className="row">
             <div className="col-sm-9">
-            { <Jumbotron jumbotron={ this.props.jumbotron } /> }
-            { <NewsRow news={ this.props.news } /> }
+            { <Jumbotron jumbotron={ jumbotron } /> }
+            { <NewsRow news={ news } /> }
             </div>
             <div className="col-sm-3">
-              <UserBlock />
-              <InfoBlock />
+              <UserBlock profile={ profile } />
+              <InfoBlock contacts={ contacts }/>
             </div>
           </div>
           : <div className="alert alert-warning" role="alert">Загружаем данные...</div> }
@@ -44,10 +47,12 @@ class Home extends React.Component<Props, {}> {
 }
 
 const mapStateToProps = state => ({
-  loggedIn: state.auth.loggedIn,
-  jumbotron: state.home.jumbotron,
-  news: state.home.news,
+  contacts: state.auth.contacts,
   fetching: state.home.fetching,
+  jumbotron: state.home.jumbotron,
+  loggedIn: state.auth.loggedIn,
+  news: state.home.news,
+  profile: state.auth.profile
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

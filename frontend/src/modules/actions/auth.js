@@ -1,26 +1,18 @@
-/* @flow */
-
-export const LOGIN: string = "LOGIN";
-export const LOGIN_SUCCESS: string = "LOGIN_SUCCESS";
-export const LOGIN_FAILED: string = "LOGIN_FAILED";
-
-export const LOGOUT: string = "LOGOUT";
-export const LOGOUT_SUCCESS: string = "LOGOUT_SUCCESS";
-export const LOGOUT_FAILED: string = "LOGOUT_FAILED";
-
-export const GET_STATE: string = "GET_STATE";
-export const GET_STATE_SUCCESS: string = "GET_STATE_SUCCESS";
-export const GET_STATE_FAILED: string = "GET_STATE_FAILED";
-
-export const UPDATE_STATE: string = "UPDATE_STATE";
-export const UPDATE_STATE_USERNAME: string = "UPDATE_STATE_USERNAME";
-export const UPDATE_STATE_PASSWORD: string = "UPDATE_STATE_PASSWORD";
-export const UPDATE_STATE_VALID: string = "UPDATE_STATE_VALID";
-
 import md5 from "js-md5";
-import type { ThunkAction } from '../types/auth'; 
 
-export const login = (username: string, password: string): ThunkAction => {
+export const LOGIN = "LOGIN";
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAILED = "LOGIN_FAILED";
+
+export const LOGOUT = "LOGOUT";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const LOGOUT_FAILED = "LOGOUT_FAILED";
+
+export const GET_STATE = "GET_STATE";
+export const GET_STATE_SUCCESS = "GET_STATE_SUCCESS";
+export const GET_STATE_FAILED = "GET_STATE_FAILED";
+
+export const login = (username, password) => {
   return dispatch => {
     dispatch({
       type: LOGIN
@@ -53,20 +45,20 @@ export const login = (username: string, password: string): ThunkAction => {
   };
 };
 
-export const loginSuccess = (result: Object): ThunkAction => {
+export const loginSuccess = (result) => {
   return dispatch => {
     dispatch({
       type: LOGIN_SUCCESS,
-      loggedIn: result.loggedIn,
-      profile: result.profile,
       contacts: result.contacts,
+      language: result.language,
+      loggedIn: result.loggedIn,
       navigation: result.navigation,
-      message: { type: "success", text: result.message }
+      profile: result.profile
     });
   };
 };
 
-export const loginFailed = (error: string): ThunkAction => {
+export const loginFailed = (error) => {
   return dispatch => {
     dispatch({
       type: LOGIN_FAILED,
@@ -75,7 +67,28 @@ export const loginFailed = (error: string): ThunkAction => {
   };
 };
 
-export const logout = (): ThunkAction => {
+// ************************************* //
+
+export const logoutSuccess = (result) => {
+  return dispatch => {
+    dispatch({
+      type: LOGOUT_SUCCESS,
+      contacts: result.contacts,
+      navigation: result.navigation
+    });
+  };
+};
+
+export const logoutFailed = (error) => {
+  return dispatch => {
+    dispatch({
+      type: LOGOUT_FAILED,
+      message: { type: "fail", text: error }
+    });
+  };
+};
+
+export const logout = () => {
   return dispatch => {
     dispatch({
       type: LOGOUT
@@ -100,27 +113,32 @@ export const logout = (): ThunkAction => {
   };
 };
 
-export const logoutSuccess = (result: Object): ThunkAction => {
+// ************************************* //
+
+export const getStateSuccess = (result) => {
   return dispatch => {
     dispatch({
-      type: LOGOUT_SUCCESS,
+      type: GET_STATE_SUCCESS,      
       contacts: result.contacts,
+      labels: result.labels,
+      language: result.language,
+      loggedIn: result.loggedIn,
       navigation: result.navigation,
-      message: { type: "success", text: result.message }
+      profile: result.profile,
     });
   };
 };
 
-export const logoutFailed = (error: string): ThunkAction => {
+export const getStateFailed = (error) => {
   return dispatch => {
     dispatch({
-      type: LOGOUT_FAILED,
+      type: GET_STATE_FAILED,
       message: { type: "fail", text: error }
     });
   };
 };
 
-export const getState = (): ThunkAction => {
+export const getState = () => {
   return dispatch => {
     dispatch({
       type: GET_STATE
@@ -142,80 +160,5 @@ export const getState = (): ThunkAction => {
       })
       .then(result => dispatch(getStateSuccess(result)))
       .catch(error => dispatch(getStateFailed(error)));
-  };
-};
-
-export const getStateSuccess = (result: Object): ThunkAction => {
-  return dispatch => {
-    dispatch({
-      type: GET_STATE_SUCCESS,
-      loggedIn: result.loggedIn,
-      profile: result.profile,
-      contacts: result.contacts,
-      navigation: result.navigation,
-      message: { type: "success", text: result.message },
-      labels: result.labels
-    });
-  };
-};
-
-export const getStateFailed = (error: string): ThunkAction => {
-  return dispatch => {
-    dispatch({
-      type: GET_STATE_FAILED,
-      message: { type: "fail", text: error }
-    });
-  };
-};
-
-export const updateState = (value: string | boolean, key: string): ThunkAction => {
-  return dispatch => {
-    dispatch({
-      type: UPDATE_STATE
-    });
-    switch (key) {
-      case "username":
-        {
-          dispatch(updateStateUsername(value));
-        }
-        break;
-      case "password":
-        {
-          dispatch(updateStatePassword(value));
-        }
-        break;
-      case "valid":
-        {
-          dispatch(updateStateValid(value));
-        }
-        break;
-    }
-  };
-};
-
-export const updateStateUsername = (username: string): ThunkAction => {
-  return dispatch => {
-    dispatch({
-      type: UPDATE_STATE_USERNAME,
-      username
-    });
-  };
-};
-
-export const updateStatePassword = (password: string): ThunkAction => {
-  return dispatch => {
-    dispatch({
-      type: UPDATE_STATE_PASSWORD,
-      password
-    });
-  };
-};
-
-export const updateStateValid = (valid: boolean): ThunkAction => {
-  return dispatch => {
-    dispatch({
-      type: UPDATE_STATE_VALID,
-      valid
-    });
   };
 };

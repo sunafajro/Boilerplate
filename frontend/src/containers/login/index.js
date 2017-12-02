@@ -1,89 +1,92 @@
-/* @flow */
-import React from 'react';
+import React, { Component } from 'react';
+import { bool, func, object, string } from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { login, updateState } from '../../modules/actions/auth';
+import { login } from '../../modules/actions/auth';
 
-type Props = {
-  loginForm: { username: string, password: string, valid: boolean},
-  loggedIn: boolean,
-  fetching: boolean,
-  message: {type: string, text: string},
-  labels: Object,
-  updateState: (value: boolean, key: string) => void,
-  login: (username: string, password: string) => void
-};
+class Login extends Component {
+  state = {
+    username: '',
+    password: '',
+    valid: true
+  }
 
-class Login extends React.Component<Props, {}> {
+  static propTypes = {
+    fetching: bool.isRequired,
+    labels: object.isRequired,
+    language: string.isRequired,
+    login: func.isRequired,
+    loggedIn: bool.isRequired,
+    message: object.isRequired
+  };
+
   /* обрабатываем событие отправки формы */
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const username = this.props.loginForm.username;
-    const password = this.props.loginForm.password;
-
-    if (!username || !password) {
-      this.props.updateState(false, 'valid');
+    if (!this.state.username || !this.state.password) {
+      this.setState({ valid: false });
     } else {
-      this.props.updateState(true, 'valid'); 
-      this.props.login(username, password);
+      this.setState({ valid: true });
+      this.props.login(this.state.username, this.state.password);
     }
   }
 
   render() {
-    const props = this.props;
+    const { username, password, valid } = this.state;
+    const { fetching, labels, language, loggedIn, message } = this.props;
     return (
       <div>
-        { props.loggedIn ? 
+        { loggedIn ? 
           <Redirect to="/home" push /> :
           <div>
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"><Link to='/'>{ props.labels.homeBreadcrumbs }</Link></li>
-              <li className="breadcrumb-item active">{ props.labels.loginBreadcrumbs }</li>
+              <li className="breadcrumb-item"><Link to='/'>{ labels.homeBreadcrumbs[language] }</Link></li>
+              <li className="breadcrumb-item active">{ labels.loginBreadcrumbs[language] }</li>
             </ol>
-            <h3>{ props.labels.loginPageTitle }</h3>
-            { props.loginForm.valid === false ?
-                <div className="alert alert-danger">{ props.labels.formEmptyFieldsAlert }</div>
+            <h3>{ labels.loginPageTitle[language] }</h3>
+            { valid === false ?
+                <div className="alert alert-danger">{ labels.formEmptyFieldsAlert[language] }</div>
               : '' }
-            { Object.keys(props.message).length ?
+            { Object.keys(message).length ?
                 <div
-                  className={ props.message.type === 'fail' ? 'alert alert-danger' : 'alert alert-success' }
+                  className={ message.type === 'fail' ? 'alert alert-danger' : 'alert alert-success' }
                 >
-                { props.message.text }
+                { message.text }
                 </div>
               : '' }
             <form onSubmit={ this.handleSubmit }>
               <div className="form-group">
-                <label htmlFor="usernameInput">{ props.labels.usernameLabel }</label>
+                <label htmlFor="usernameInput">{ labels.usernameLabel[language] }</label>
                 <input
                   type="text"
                   className="form-control"
                   id="usernameInput"
                   placeholder="Enter username"
-                  value={ props.loginForm.username }
-                  onChange={ (e) => this.props.updateState(e.target.value, 'username') }
-                  disabled={ props.fetching }
+                  value={ username }
+                  onChange={ (e) => this.setState({ username: e.target.value }) }
+                  disabled={ fetching }
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="passwordInput">{ props.labels.passwordLabel }</label>
+                <label htmlFor="passwordInput">{ labels.passwordLabel[language] }</label>
                 <input
                   type="password"
                   className="form-control"
                   id="passwordInput"
                   placeholder="Password"
-                  value={ props.loginForm.password }
-                  onChange={ (e) => this.props.updateState(e.target.value, 'password') }
-                  disabled={ props.fetching }
+                  value={ password }
+                  onChange={ (e) => this.setState({ password: e.target.value }) }
+                  disabled={ fetching }
                 />
               </div>
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={ props.fetching }
+                disabled={ fetching }
               >
-                { props.labels.submitBtnLabel}
+                { labels.submitBtnLabel[language]}
               </button>
             </form>
           </div>
@@ -94,15 +97,14 @@ class Login extends React.Component<Props, {}> {
 }
 
 const mapStateToProps = state => ({
-  loginForm: state.auth.loginForm,
-  loggedIn: state.auth.loggedIn,
   fetching: state.auth.fetching,
-  message: state.auth.message,
-  labels: state.auth.labels
+  labels: state.auth.labels,
+  language: state.auth.language,
+  loggedIn: state.auth.loggedIn,
+  message: state.auth.message
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateState,
   login
 }, dispatch);
 

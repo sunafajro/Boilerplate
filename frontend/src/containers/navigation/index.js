@@ -1,19 +1,33 @@
-/* @flow */
-import React from 'react';
+import React, { Component } from 'react';
+import { array, bool, object, string } from 'prop-types';
 import { Link } from 'react-router-dom';
-import NavLinks from './components/nav-links';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { logout } from '../../modules/actions/auth';
+import { NavLinks } from './components/nav-links';
 
-type Props = {
-  location: Object
-}
+class Navigation extends Component {
+  static propTypes = {
+    fetching: bool.isRequired,
+    labels: object.isRequired,
+    language: string.isRequired,
+    location: object.isRequired,
+    loggedIn: bool.isRequired,
+    navigation: array.isRequired,
+    profile: object.isRequired
+  }
 
-class Navigation extends React.Component<Props, {}> {
+  clickLogoutHandle = (e) => {
+    e.preventDefault();
+    this.props.logout();
+  }
+
   render() {
-    const props = this.props;
+    const { fetching, labels, language, location, loggedIn, navigation, profile } = this.props;
     return (
       <nav className="navbar navbar-expand-lg navbar-light fixed-top bg-light">
         <div className="container">
-          <Link className="navbar-brand" to="/">Личный кабинет клиента</Link>
+          <Link className="navbar-brand" to="/">{ labels.navBarTitle[language] }</Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -24,12 +38,36 @@ class Navigation extends React.Component<Props, {}> {
             aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
-          <NavLinks location={ props.location } />
+          <NavLinks
+            fetching={ fetching }
+            language={ language }
+            location={ location }
+            loggedIn={ loggedIn }
+            logout={ this.clickLogoutHandle }
+            navigation={ navigation }
+            profile={ profile }
+          />
         </div>
       </nav>
     );
   }
 }
 
-export default Navigation;
+const mapStateToProps = state => ({
+  fetching: state.auth.fetching,
+  labels: state.auth.labels,
+  language: state.auth.language,
+  loggedIn: state.auth.loggedIn,
+  navigation: state.auth.navigation,
+  profile: state.auth.profile
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  logout
+}, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Navigation);
 

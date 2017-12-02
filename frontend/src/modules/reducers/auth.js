@@ -1,15 +1,3 @@
-/* @flow */
-
-const DEFAULT_LABELS: Object = {
-  homeBreadcrumbs: "Главная",
-  loginBreadcrumbs: "Вход",
-  loginPageTitle: "Форма входа",
-  formEmptyFieldsAlert: "Поля формы должны быть заполнены!",
-  usernameLabel: "Логин",
-  passwordLabel: "Пароль",
-  submitBtnLabel: "Войти"
-};
-
 import {
   LOGIN,
   LOGIN_SUCCESS,
@@ -19,31 +7,22 @@ import {
   LOGOUT_FAILED,
   GET_STATE,
   GET_STATE_SUCCESS,
-  GET_STATE_FAILED,
-  UPDATE_STATE,
-  UPDATE_STATE_USERNAME,
-  UPDATE_STATE_PASSWORD,
-  UPDATE_STATE_VALID
+  GET_STATE_FAILED
 } from '../actions/auth';
+import { LABELS } from '../translations';
 
-import type { Action, State } from '../types/auth'; 
-
-const initialState: State = {
-  loggedIn: false,
-  fetching: false,
-  profile: {},
+const initialState = {
   contacts: [],
-  navigation: [],
+  fetching: false,
+  labels: { ...LABELS },
+  language: 'ru',
+  loggedIn: false,
   message: {},
-  labels: { ...DEFAULT_LABELS },
-  loginForm: {
-    username: "",
-    password: "",
-    valid: true
-  }
+  navigation: [],
+  profile: {}
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case LOGIN:
       return {
@@ -52,17 +31,15 @@ export default (state: State = initialState, action: Action) => {
       };
 
     case LOGIN_SUCCESS:
-      let loginForm = { ...state.loginForm };
-      loginForm.password = '';
       return {
         ...state,
-        fetching: false,
-        loggedIn: action.loggedIn,
-        profile: action.profile,
         contacts: action.contacts,
+        fetching: false,
+        language: action.language,
+        loggedIn: action.loggedIn,
+        message: {},
         navigation: action.navigation,
-        message: action.message,
-        loginForm
+        profile: action.profile
       };
 
     case LOGIN_FAILED:
@@ -81,19 +58,19 @@ export default (state: State = initialState, action: Action) => {
     case LOGOUT_SUCCESS:
       return {
         ...state,
+        contacts: action.contacts,
         fetching: false,
         loggedIn: false,
-        profile: {},
-        contacts: action.contacts,
+        message: {},
         navigation: action.navigation,
-        message: {}
+        profile: {}
       };
 
     case LOGOUT_FAILED:
       return {
         ...state,
         fetching: false,
-        message: {}
+        message: action.message
       };
 
     case GET_STATE:
@@ -105,56 +82,21 @@ export default (state: State = initialState, action: Action) => {
     case GET_STATE_SUCCESS:
       return {
         ...state,
-        fetching: false,
-        loggedIn: action.loggedIn,
-        profile: action.profile,
         contacts: action.contacts,
+        fetching: false,
+        labels: action.labels ? action.labels : { ...LABELS },
+        language: action.language ? action.language : 'ru',
+        loggedIn: action.loggedIn,
         navigation: action.navigation,
-        message: {},
-        labels: action.labels
+        profile: action.profile
       };
 
     case GET_STATE_FAILED:
       return {
         ...state,
         fetching: false,
-        message: {}
+        message: action.message
       };
-
-    case UPDATE_STATE:
-      return {
-        ...state
-      };
-
-    case UPDATE_STATE_USERNAME:
-      {
-        let loginForm = { ...state.loginForm };
-        loginForm.username = action.username;
-        return {
-          ...state,
-          loginForm
-        };
-      }
-
-    case UPDATE_STATE_PASSWORD:
-      {
-        let loginForm = { ...state.loginForm };
-        loginForm.password = action.password;
-        return {
-          ...state,
-          loginForm
-        };
-      }
-
-    case UPDATE_STATE_VALID:
-      {
-        let loginForm = { ...state.loginForm };
-        loginForm.valid = action.valid;
-        return {
-          ...state,
-          loginForm
-        };
-      }
 
     default:
       return state;
