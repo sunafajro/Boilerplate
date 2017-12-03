@@ -47,12 +47,12 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => ({
-  contacts: state.auth.contacts,
+  contacts: state.app.contacts,
   fetching: state.home.fetching,
   jumbotron: state.home.jumbotron,
-  loggedIn: state.auth.loggedIn,
+  loggedIn: state.app.loggedIn,
   news: state.home.news,
-  profile: state.auth.profile
+  profile: state.app.profile
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

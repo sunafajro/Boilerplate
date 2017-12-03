@@ -54,12 +54,12 @@ class Navigation extends Component {
 }
 
 const mapStateToProps = state => ({
-  fetching: state.auth.fetching,
-  labels: state.auth.labels,
-  language: state.auth.language,
-  loggedIn: state.auth.loggedIn,
-  navigation: state.auth.navigation,
-  profile: state.auth.profile
+  fetching: state.app.fetching,
+  labels: state.app.labels,
+  language: state.app.language,
+  loggedIn: state.app.loggedIn,
+  navigation: state.app.navigation,
+  profile: state.app.profile
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

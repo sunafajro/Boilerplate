@@ -98,8 +98,8 @@ class Login extends Component {
 
 const mapStateToProps = state => ({
   fetching: state.auth.fetching,
-  labels: state.auth.labels,
-  language: state.auth.language,
+  labels: state.app.labels,
+  language: state.app.language,
   loggedIn: state.auth.loggedIn,
   message: state.auth.message
 });
