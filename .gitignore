@@ -37,3 +37,4 @@ tests/_support/_generated
 # webroot
 /web/fa
 /web/js
+npm-debug.log
