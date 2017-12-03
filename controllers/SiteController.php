@@ -146,6 +146,7 @@ class SiteController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         return [
             'result' => true,
+            'language' => 'ru',
             'loggedIn' => !Yii::$app->user->isGuest,
             'profile' => User::getUserData(),
             'contacts' => Contact::getContacts(),
