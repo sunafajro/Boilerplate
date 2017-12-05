@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getAppState } from '../../modules/actions/app';
 import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
+import { Layout } from 'antd';
 import Navigation from '../navigation/index';
 import Home from '../home/index';
 import Login from '../login/index';
@@ -34,17 +35,17 @@ class App extends Component {
       }
       if (!fetching) {
         content = (
-          <div> 
+          <Layout> 
             <Navigation location={ location } />
-            <div className="container"> 
+            <Layout> 
               <Switch>
                 <Route exact path='/profile' component={ Profile }/>
                 <Route exact path='/login' component={ Login }/>
                 <Route path='/' component={ Home }/>
               </Switch>
-            </div>
+            </Layout>
             <Footer />
-          </div>
+          </Layout>
         );
       }
     } else {
@@ -60,7 +61,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  appLoaded: state.app.loggedIn, 
+  appLoaded: state.app.appLoaded, 
   loggedIn: state.app.loggedIn,
   profile: state.app.profile,
   fetching: state.app.fetching,
