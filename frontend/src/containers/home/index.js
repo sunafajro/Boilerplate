@@ -32,7 +32,7 @@ class Home extends Component {
         { !fetching ?
           <div className="row">
             <div className="col-sm-9">
-            { <Jumbotron jumbotron={ jumbotron } /> }
+            { Object.keys(jumbotron).length ? <Jumbotron jumbotron={ jumbotron } /> : null }
             { <NewsRow news={ news } /> }
             </div>
             <div className="col-sm-3">
