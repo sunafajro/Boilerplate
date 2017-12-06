@@ -9,7 +9,7 @@ import Navigation from '../navigation/index';
 import Home from '../home/index';
 import Login from '../login/index';
 import Profile from '../profile/index';
-import { Footer } from '../footer/index';
+import { SiteFooter } from '../footer/index';
 
 class App extends Component {
   static propTypes = {
@@ -35,7 +35,7 @@ class App extends Component {
       }
       if (!fetching) {
         content = (
-          <Layout> 
+          <Layout className="layout"> 
             <Navigation location={ location } />
             <Layout> 
               <Switch>
@@ -44,7 +44,7 @@ class App extends Component {
                 <Route path='/' component={ Home }/>
               </Switch>
             </Layout>
-            <Footer />
+            <SiteFooter />
           </Layout>
         );
       }

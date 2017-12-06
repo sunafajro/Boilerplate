@@ -1,9 +1,8 @@
 import React from 'react';
+import { Layout } from 'antd';
 
-export const Footer = () => (
-  <footer className="footer">
-    <div className="container">
-      <span className="text-muted">© Школа иностранных языков "Язык для успеха" 2017</span>
-    </div>
-  </footer>
+const { Footer } = Layout;
+
+export const SiteFooter = () => (
+  <Footer style={{ textAlign: 'center' }}>© Школа иностранных языков "Язык для успеха" 2017</Footer>
 );
