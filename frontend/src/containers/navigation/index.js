@@ -1,54 +1,62 @@
 import React, { Component } from 'react';
-import { array, bool, object, string } from 'prop-types';
+import { bool, object, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import { Menu, Icon } from 'antd';
 import { logout } from '../../modules/actions/auth';
-import { NavLinks } from './components/nav-links';
 
 class Navigation extends Component {
+  state = {
+    current: this.props.loggedIn ? 'profile' : 'login' 
+  }
+
   static propTypes = {
     fetching: bool.isRequired,
     labels: object.isRequired,
     language: string.isRequired,
     location: object.isRequired,
     loggedIn: bool.isRequired,
-    navigation: array.isRequired,
+    navigation: object.isRequired,
     profile: object.isRequired
   }
 
-  clickLogoutHandle = (e) => {
-    e.preventDefault();
-    this.props.logout();
+  handleClick = (e) => {
+    if (e.key === 'logout') {
+      this.props.logout();
+      this.setState({
+        current: 'login',
+      });
+    } else {
+      this.props.goTo(this.props.navigation[e.key].path);
+      this.setState({
+        current: e.key,
+      });
+    }
   }
 
   render() {
     const { fetching, labels, language, location, loggedIn, navigation, profile } = this.props;
+    let menuItems = [];
+    if (Object.keys(navigation).length) {
+      Object.keys(navigation).forEach(item => {
+        menuItems.push(
+          <Menu.Item key={item} style={{ float: item !== 'home' ? 'right' : 'left' }}>
+            <Icon type={navigation[item].icon} /> { navigation[item].title[language] }
+          </Menu.Item>
+        );
+      });
+    }
     return (
-      <nav className="navbar navbar-expand-lg navbar-light fixed-top bg-light">
-        <div className="container">
-          <Link className="navbar-brand" to="/">{ labels.navBarTitle[language] }</Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <NavLinks
-            fetching={ fetching }
-            language={ language }
-            location={ location }
-            loggedIn={ loggedIn }
-            logout={ this.clickLogoutHandle }
-            navigation={ navigation }
-            profile={ profile }
-          />
-        </div>
-      </nav>
+      <Menu
+        onClick={this.handleClick}
+        selectedKeys={[this.state.current]}
+        mode="horizontal"
+        style={{ lineHeight: '64px', padding: '0 50px' }}
+      >
+        {menuItems}
+      </Menu>
     );
   }
 }
@@ -63,7 +71,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  logout
+  logout,
+  goTo: route => push(route)
 }, dispatch);
 
 export default connect(
