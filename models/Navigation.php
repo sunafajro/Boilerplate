@@ -11,14 +11,53 @@ class Navigation extends Model
     public static function getNavLinks()
     {
         $links = [];
-
         if (Yii::$app->user->isGuest) {
-            $links[] = ['id' => 'login', 'title' => 'Login', 'path' => '/login'];
+            $links = [
+                'home' => [
+                    'title' => [
+                        'ru' => 'Личный кабинет',
+                        'cv' => 'Личный кабинет'
+                    ],
+                    'path' => '/',
+                    'icon' => 'home'
+                ],
+                'login' => [
+                    'title' => [
+                        'ru' => 'Вход',
+                        'cv' => 'Вход'
+                    ],
+                    'path' => '/login',
+                    'icon' => 'login'
+                ]
+            ];
         } else {
-            $links[] = ['id' => 'home', 'title' => 'Home', 'path' => '/'];
-            $links[] = ['id' => 'profile', 'title' => 'Profile', 'path' => '/profile'];
+            $links = [
+                'home' => [
+                    'title' => [
+                        'ru' => 'Личный кабинет',
+                        'cv' => 'Личный кабинет'
+                    ],
+                    'path' => '/',
+                    'icon' => 'home'
+                ],
+                'profile' => [
+                    'title' => [
+                        'ru' => 'Профиль',
+                        'cv' => 'Профиль'
+                    ],
+                    'path' => '/profile',
+                    'icon' => 'user'
+                ],
+                'logout' => [
+                    'title' => [
+                        'ru' => 'Выход',
+                        'cv' => 'Выход'
+                    ],
+                    'path' => '/logout',
+                    'icon' => 'logout'
+                ]
+            ];
         }
-
         return $links;
     }
 }

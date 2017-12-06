@@ -9,6 +9,7 @@ use app\models\LoginForm;
 use app\models\Contact;
 use app\models\ContactForm;
 use app\models\Navigation;
+use app\models\Translation;
 use app\models\User;
 use yii\web\Controller;
 use yii\web\Response;
@@ -151,40 +152,7 @@ class SiteController extends Controller
             'profile' => User::getUserData(),
             'contacts' => Contact::getContacts(),
             'navigation' => Navigation::getNavLinks(),
-            'labels' => [
-                'navBarTitle' => [
-                    'ru' => "Личный кабинет клиента",
-                    'cv' => "Личный кабинет клиента"
-                ],
-                'homeBreadcrumbs' => [
-                    'ru' => 'Главная',
-                    'cv' => 'Главная'
-                ],
-                'loginBreadcrumbs' => [
-                    'ru' => 'Вход',
-                    'cv' => 'Вход'
-                ],
-                'loginPageTitle' => [
-                    'ru' => 'Форма входа',
-                    'cv' => 'Форма входа',
-                ],
-                'formEmptyFieldsAlert' => [
-                    'ru' => 'Поля формы должны быть заполнены!',
-                    'cv' => 'Поля формы должны быть заполнены!'
-                ],
-                'usernameLabel' => [
-                    'ru' => 'Логин',
-                    'cv' => 'Логин'
-                ],
-                'passwordLabel' => [
-                    'ru' => 'Пароль',
-                    'cv' => 'Пароль'
-                ],
-                'submitBtnLabel' => [
-                    'ru' => 'Войти',
-                    'cv' => 'Войти'
-                ]
-            ]
+            'labels' => Translation::getTranslations()
         ];
     }
 
