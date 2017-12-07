@@ -40,6 +40,14 @@ class Navigation extends Model
                     'path' => '/',
                     'icon' => 'home'
                 ],
+                'news' => [
+                    'title' => [
+                        'ru' => 'Новости',
+                        'cv' => 'Новости'
+                    ],
+                    'path' => '/home',
+                    'icon' => 'profile'
+                ],
                 'profile' => [
                     'title' => [
                         'ru' => 'Профиль',
