@@ -1,11 +1,8 @@
 import React from 'react';
 import { array } from 'prop-types';
+import { Card } from 'antd';
 
-InfoBlock.propTypes = {
-  contacts: array.isRequired
-};
-
-export function InfoBlock ({ contacts }) {
+export const InfoBlock = ({ contacts }) => {
   let information = [];
   if (contacts.length) {
     information = contacts.map(item => {
@@ -33,11 +30,12 @@ export function InfoBlock ({ contacts }) {
   }
 
   return (
-    <div className="card border-warning">
-      <h5 className="card-header bg-warning text-white">Наши контакты</h5>
-      <div className="card-body">
-        { information }
-      </div>
-    </div>
+    <Card title="Наши контакты">
+      { information }
+    </Card>
   );
 }
+
+InfoBlock.propTypes = {
+  contacts: array.isRequired
+};
