@@ -35,9 +35,9 @@ class App extends Component {
       }
       if (!fetching) {
         content = (
-          <Layout className="layout"> 
+          <Layout> 
             <Navigation location={ location } />
-            <Layout> 
+            <Layout style={{ padding: '0 50px' }}> 
               <Switch>
                 <Route exact path='/profile' component={ Profile }/>
                 <Route exact path='/login' component={ Login }/>
