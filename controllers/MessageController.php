@@ -43,8 +43,7 @@ class MessageController extends Controller
         $ads = Message::getAds();
         return [
             'result' => true,
-            'jumbotron' => $ads['jumbotron'],
-            'news' => $ads['news'],
+            'news' => $ads,
         ];
     }
 }

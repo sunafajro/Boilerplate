@@ -71,20 +71,15 @@ class Message extends \yii\db\ActiveRecord
         ->from('calc_message m')
         ->where('calc_messwhomtype=:twelve AND send=:one', [':twelve' => 12, ':one' => 1])
         ->orderby(['m.data' => SORT_DESC])
-        ->limit(4)
+        ->limit(6)
         ->all();
         
-        if (!empty($tmp_ads)) {
-            $result['jumbotron'] = $tmp_ads[0];
-            $result['jumbotron']['anounce'] = static::createAnounce($result['jumbotron']['body']);
-            $result['jumbotron']['body'] = strip_tags($result['jumbotron']['body']);   
-            $result['news'] = [];
-            unset($tmp_ads[0]);
+        if (!empty($tmp_ads)) {  
             foreach($tmp_ads as $a) {
                 $tmp = $a;
                 $tmp['anounce'] = static::createAnounce($tmp['body']);
                 $tmp['body'] = strip_tags($tmp['body']);
-                $result['news'][] = $tmp;
+                $result[] = $tmp;
             }               
         }
 
