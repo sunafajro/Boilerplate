@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { array, bool, func, object } from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Col, Row } from 'antd';
 import { getHome } from '../../modules/actions/home';
-import { Jumbotron } from './components/Jumbotron';
-import { NewsRow } from './components/NewsRow';
+import { NewsGrid } from './components/NewsGrid';
 import { UserBlock } from '../userblock';
 import { InfoBlock } from './components/InfoBlock';
 
@@ -13,7 +13,6 @@ class Home extends Component {
     contacts: array.isRequired,
     fetching: bool.isRequired,
     getHome: func.isRequired,
-    jumbotron: object.isRequired,
     loggedIn: bool.isRequired,
     news: array.isRequired,
     profile: object.isRequired
@@ -26,22 +25,17 @@ class Home extends Component {
   }
 
   render() {
-    const { contacts, fetching, jumbotron, news, profile } = this.props;
+    const { contacts, fetching, news, profile } = this.props;
     return (
-      <div className="content-top-padding">
-        { !fetching ?
-          <div className="row">
-            <div className="col-sm-9">
-            { Object.keys(jumbotron).length ? <Jumbotron jumbotron={ jumbotron } /> : null }
-            { <NewsRow news={ news } /> }
-            </div>
-            <div className="col-sm-3">
-              <UserBlock profile={ profile } />
-              <InfoBlock contacts={ contacts }/>
-            </div>
-          </div>
-          : <div className="alert alert-warning" role="alert">Загружаем данные...</div> }
-      </div>
+      <Row>
+        <Col xs={24} sm={24} md={14} lg={16} xl={17} xxl={19} style={{ padding: '10px 0px 10px 0px' }}>
+          <NewsGrid loading={fetching} data={ news } />
+        </Col>
+        <Col xs={24} sm={24} md={10} lg={8} xl={7} xxl={5} style={{ padding: '10px 0px 10px 10px' }}>
+          <UserBlock profile={ profile } />
+          <InfoBlock contacts={ contacts }/>
+        </Col>
+      </Row>
     );
   }
 }
@@ -49,7 +43,6 @@ class Home extends Component {
 const mapStateToProps = state => ({
   contacts: state.app.contacts,
   fetching: state.home.fetching,
-  jumbotron: state.home.jumbotron,
   loggedIn: state.app.loggedIn,
   news: state.home.news,
   profile: state.app.profile

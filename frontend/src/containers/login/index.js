@@ -33,7 +33,7 @@ class Login extends Component {
     const { fetching, labels, language, loggedIn, message } = this.props;
     const { getFieldDecorator } = this.props.form;
     return (
-      <Content style={{ padding: '0 50px' }}>
+      <Content>
         { loggedIn ? 
           <Redirect to="/home" push /> :
           <div>
